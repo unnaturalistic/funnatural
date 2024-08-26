@@ -4,7 +4,7 @@ var fs = require('fs');
 
 app.use(express.static(__dirname));
 
-app.get('/', (req, res) => {
+app.get('/status', (req, res) => {
     console.log("[INFO] Sending Response '/'")
     res.send(
         {
@@ -19,10 +19,13 @@ app.get('/', (req, res) => {
     )
 })
 
-app.put('/upload', (req, res) => {
+app.post('/upload', (req, res) => {
     console.log("[INFO] Getting Data '/upload'")
     var data = []
     //if (req.headers['auth-key'] === "a14fc2af61e79df71ccc31cee4a9e790") { (funny)
+        if (req.headers['name'] === "index.html") {
+            res.send(401)
+        }
         req.on('data', (chunk) => {
             data.push(chunk)
         })
@@ -33,9 +36,10 @@ app.put('/upload', (req, res) => {
             }
         });
 
-        console.log("[INFO] Sending Response '/upload':  { \"URL\":" + `::3030/${req.headers['name']} }`)
+        console.log("[INFO] Sending Response '/upload':  { \"CHUNK_ARRAY_SIZE\":" + `${data.length}` + ", \"URL\":" + `::3030/${req.headers['name']} }`)
         res.send(
             {
+                "CHUNK_ARRAY_SIZE": data.length,
                 "URL": `::3030/${req.headers['name']}`
             }
         )
