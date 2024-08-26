@@ -27,7 +27,7 @@
         const response = await fetch("/upload", { 
             method: 'POST', 
             headers: { 
-                'Content-type': 'application/octet-stream',
+                'Content-type': 'multipart/form-data',
                 'name': "whatever",
             }, 
             body: arrayBuffer //this is where our bytes read from the file will go

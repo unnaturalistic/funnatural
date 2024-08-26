@@ -21,7 +21,7 @@ app.get('/status', (req, res) => {
 
 app.post('/upload', (req, res) => {
     console.log("[INFO] Getting Data '/upload'")
-    var data = []
+    let data = []
     //if (req.headers['auth-key'] === "a14fc2af61e79df71ccc31cee4a9e790") { (funny)
         if (req.headers['name'] === "index.html") {
             res.send(401)
@@ -29,20 +29,23 @@ app.post('/upload', (req, res) => {
         req.on('data', (chunk) => {
             data.push(chunk)
         })
-
+        let length = 0
         req.on("end", () => {
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++ & (length = data.length)) {
+                length++
+                console.log(length)
                 fs.appendFileSync(req.headers['name'], Uint8Array.from(data[i]))
             }
+            
+            console.log("[INFO] Sending Response '/upload':  { \"CHUNK_ARRAY_SIZE\":" + `${length}` + ", \"URL\":" + `::3030/${req.headers['name']} }`)
+            res.send(
+                {
+                    "CHUNK_ARRAY_SIZE": data.length,
+                    "URL": `::3030/${req.headers['name']}`
+                }
+            )
         });
-
-        console.log("[INFO] Sending Response '/upload':  { \"CHUNK_ARRAY_SIZE\":" + `${data.length}` + ", \"URL\":" + `::3030/${req.headers['name']} }`)
-        res.send(
-            {
-                "CHUNK_ARRAY_SIZE": data.length,
-                "URL": `::3030/${req.headers['name']}`
-            }
-        )
+        
     //} else {
     //    res.send(401)
     //}
