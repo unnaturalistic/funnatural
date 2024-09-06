@@ -22,7 +22,12 @@ app.get('/status', (req, res) => {
 app.post('/upload', (req, res) => {
     console.log("[INFO] Getting Data '/upload'")
     let data = []
+
     //if (req.headers['auth-key'] === "a14fc2af61e79df71ccc31cee4a9e790") { (funny)
+        if (fs.existsSync(req.headers['name'])) {
+            res.send(401)
+            return;
+        }
         if (req.headers['name'] === "index.html") {
             res.send(401)
         }
@@ -33,7 +38,7 @@ app.post('/upload', (req, res) => {
         req.on("end", () => {
             for (let i = 0; i < data.length; i++ & (length = data.length)) {
                 length++
-                console.log(length)
+                console.log("Stream: ", length)
                 fs.appendFileSync(req.headers['name'], Uint8Array.from(data[i]))
             }
             
